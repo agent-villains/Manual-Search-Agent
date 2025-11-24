@@ -42,6 +42,7 @@ jobs:
           const diff = process.env.DIFF_CONTENT;
 
           const prompt = `
+          Please write the entire review in Korean.
           You are a senior backend engineer reviewing a GitHub Pull Request.
 
           \`\`\`diff
