@@ -13,13 +13,11 @@ jobs:
       pull-requests: write
 
     steps:
-      # 1) Repo checkout + full history
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # 2) Generate diff between PR base and head
       - name: Get diff
         id: diff
         run: |
@@ -28,40 +26,25 @@ jobs:
           echo "$DIFF" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-      # 3) Install OpenAI SDK
       - name: Install OpenAI SDK
         run: |
           npm init -y
           npm install openai
 
-      # 4) Generate AI review using Node.js
       - name: Run AI Code Review
         id: ai_review
         run: |
           node << 'EOF'
           const { OpenAI } = require("openai");
-          const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+          const fs = require("fs");
 
+          const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
           const diff = process.env.DIFF_CONTENT;
 
           const prompt = `
+          Please write the entire review in Korean.
           You are a senior backend engineer reviewing a GitHub Pull Request.
-          Provide a clear code review in Markdown with the following sections:
 
-          ### 🐞 Bugs / Risks
-          - (list)
-
-          ### ✨ Improvements
-          - (list)
-
-          ### 🔍 Code Smells
-          - (list)
-
-          ### 📘 Readability
-          - (list)
-
-          ----
-          Here is the PR diff:
           \`\`\`diff
           ${diff}
           \`\`\`
@@ -74,7 +57,15 @@ jobs:
             });
 
             const review = res.choices[0].message.content;
-            console.log("REVIEW_OUTPUT=" + JSON.stringify(review));
+
+            // 안전한 multiline output
+            const out = [
+              "REVIEW_OUTPUT<<EOF",
+              review,
+              "EOF"
+            ].join("\n");
+
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, out);
           }
 
           main();
@@ -83,7 +74,6 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           DIFF_CONTENT: ${{ steps.diff.outputs.diff }}
 
-      # 5) Comment on the PR
       - name: Comment on PR
         uses: actions/github-script@v7
         env:
