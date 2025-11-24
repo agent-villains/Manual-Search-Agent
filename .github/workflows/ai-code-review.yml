@@ -40,27 +40,15 @@ jobs:
         run: |
           node << 'EOF'
           const { OpenAI } = require("openai");
-          const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+          const fs = require("fs");
 
+          const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
           const diff = process.env.DIFF_CONTENT;
 
           const prompt = `
           You are a senior backend engineer reviewing a GitHub Pull Request.
-          Provide a clear code review in Markdown with the following sections:
+          Provide a clear code review in Markdown.
 
-          ### 🐞 Bugs / Risks
-          - (list)
-
-          ### ✨ Improvements
-          - (list)
-
-          ### 🔍 Code Smells
-          - (list)
-
-          ### 📘 Readability
-          - (list)
-
-          ----
           Here is the PR diff:
           \`\`\`diff
           ${diff}
@@ -74,14 +62,25 @@ jobs:
             });
 
             const review = res.choices[0].message.content;
-            console.log("REVIEW_OUTPUT=" + JSON.stringify(review));
+
+            //
+            // ---- 🔥 GitHub Output Safe Write ----
+            //
+            // !! 여기에서 ${review} 같은 치환문자 없음 !!
+            // Node 변수(review)를 직접 문자열로 합쳐 파일에 씀.
+            //
+
+            const out = [
+              "REVIEW_OUTPUT<<EOF",
+              review,
+              "EOF"
+            ].join("\n");
+
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, out);
           }
 
           main();
           EOF
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          DIFF_CONTENT: ${{ steps.diff.outputs.diff }}
 
       # 5) Comment on the PR
       - name: Comment on PR
