@@ -36,7 +36,7 @@ CATEGORY_TITLES = [
     "업무공통", "기간수익률", "영업직권 업무권한"
 ]
 
-root_agent = Agent(
+router_agent = Agent(
     model="gemini-2.5-flash",
     name="title_router",
     description="LLM 기반 중분류 라우팅 에이전트",
@@ -54,4 +54,4 @@ root_agent = Agent(
 """
 )
 
-__all__ = ["root_agent"]
+__all__ = ["router_agent"]

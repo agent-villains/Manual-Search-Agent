@@ -1,6 +1,6 @@
 from google.adk.agents.llm_agent import Agent
 
-root_agent = Agent(
+query_agent = Agent(
     model='gemini-2.5-flash',
     name='query_normalizer_agent',
     description='사용자 질문을 검색 친화적 형태로 확장하는 Query Normalizer',
