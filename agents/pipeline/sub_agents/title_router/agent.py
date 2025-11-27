@@ -51,7 +51,8 @@ router_agent = Agent(
 
 중분류 목록:
 {CATEGORY_TITLES}
-"""
+""",
+    output_key="category_json",
 )
 
 __all__ = ["router_agent"]

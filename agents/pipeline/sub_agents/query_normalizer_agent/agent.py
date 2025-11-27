@@ -15,5 +15,6 @@ query_agent = Agent(
   "expansion_reason": "..."
 }
 텍스트 설명은 JSON 밖에 절대 추가하지 마세요.
-"""
+""",
+    output_key="normalized_query_json",
 )
