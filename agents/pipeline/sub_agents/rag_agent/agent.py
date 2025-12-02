@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 GEMINI_MODEL = os.getenv("MODEL_ID")
-RAG_CORPUS = os.getenv("RAG_CORPUS")
+RAG_CORPUS = os.getenv("RAG_ALL_CORPUS")
 
 ask_vertex_retrieval = VertexAiRagRetrieval(
     name="ask_isa_rag",
