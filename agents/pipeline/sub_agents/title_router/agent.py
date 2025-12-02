@@ -37,7 +37,7 @@ from google.adk.agents.llm_agent import Agent
 # ]
 
 CATEGORY_TITLES = [
-    "입출금관리", "서비스"
+    "기타매매", "비대면제휴업무", "입출금관리", "창구관리및책임자거래업무", "ISA"
 ]
 
 router_agent = Agent(
