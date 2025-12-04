@@ -1,0 +1,12 @@
+@echo off
+REM Windows용 RAG 모드 전환 스크립트
+
+if "%1"=="" (
+    echo 현재 RAG 모드를 확인하려면:
+    echo   switch_rag_mode.bat routing      # 라우팅 버전 사용
+    echo   switch_rag_mode.bat no_routing   # 라우팅 없는 버전 사용
+    python switch_rag_mode.py
+) else (
+    python switch_rag_mode.py %1
+)
+
